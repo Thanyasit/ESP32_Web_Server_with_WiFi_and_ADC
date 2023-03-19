@@ -1,0 +1,1 @@
+Web server using ESP32 as Soft Access Point which can communicate in both ways. The hardware side has adjustable resistors as Input and LED as output. The software side (web page) has Slider bar as Input and Graph as Output.

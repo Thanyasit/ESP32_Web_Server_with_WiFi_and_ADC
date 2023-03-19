@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #000000;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #000000;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+  <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+<div class="slidecontainer">
+  <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
+  <p>Value: <span id="demo"></span></p>
+</div>
+<script>
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  var httpRequest = new XMLHttpRequest();
+  httpRequest.open("GET", "/get?value="+slider.value, true);
+  httpRequest.send();
+}
+Plotly.plot('myDiv',[{
+        y:[parseFloat(this.responseText)],
+        //type:'scatter',
+        mode: 'lines',
+        line: {
+        color: 'rgb(0, 0, 0)',
+        size: 5
+        }
+      }]);
+setInterval(function(){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      Plotly.extendTraces('myDiv', { y: [[parseFloat(this.responseText)]] }, [0])
+    }
+  };
+  xhttp.open("GET", "/get", true);
+  xhttp.send();
+},500);
+</script>
+</body>
+</html>
